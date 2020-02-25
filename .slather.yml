@@ -1,0 +1,6 @@
+coverage_service: cobertura_xml
+xcodeproj: AnimatedStopWatch.xcodeproj
+scheme: AnimatedStopWatch
+output_directory: reports
+ignore:
+  - AnimatedStopWatchTests/*

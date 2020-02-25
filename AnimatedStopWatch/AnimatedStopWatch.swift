@@ -56,7 +56,7 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 			applyAttributes()
 		}
 	}
-	//MARK: - Customizationn variables
+	//MARK: - Customization variables
 	
 	public var insets: UIEdgeInsets = UIEdgeInsets(top: 20, left: 30, bottom: 10, right: 50)
 	public var endDate: Date = Date(timeIntervalSinceNow: 15 * 60) {
@@ -64,6 +64,8 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 			updateLabels()
 		}
 	}
+	var delegate: AnimatedStopwatchDelegate?
+	
 	//MARK: - Private variables
 	
 	var stackView = { () -> UIStackView in
@@ -99,6 +101,7 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 		let now = Date()
 		guard endDate > now else {
 			timer?.invalidate()
+			delegate?.didFinishCountdown(stopwatch: self)
 			for i in labels
 			{
 				i.text = "0"
