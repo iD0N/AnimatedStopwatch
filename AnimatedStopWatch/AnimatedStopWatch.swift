@@ -58,7 +58,7 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 	}
 	//MARK: - Customization variables
 	
-	public var insets: UIEdgeInsets = UIEdgeInsets(top: 20, left: 30, bottom: 10, right: 50)
+	public var insets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 30)
 	public var endDate: Date = Date(timeIntervalSinceNow: 15 * 60) {
 		didSet {
 			updateLabels()
@@ -72,7 +72,8 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 		let stack = UIStackView()
 		stack.alignment = .center
 		stack.axis = .horizontal
-		stack.distribution = .fillEqually
+		stack.distribution = .equalSpacing
+		stack.translatesAutoresizingMaskIntoConstraints = false
 		return stack
 	}()
 	
@@ -90,10 +91,6 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 		{
 			label.font = font
 			label.textColor = numberColors
-		}
-		for label in sepratorLabels
-		{
-			label.font = font
 		}
 	}
 	func updateLabels() {
@@ -196,24 +193,25 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 				let label = UILabel()
 				label.textAlignment = .center
 				label.textColor = .black
-				self.stackView.addArrangedSubview(label)
+				label.translatesAutoresizingMaskIntoConstraints = false
 				self.labels.append(label)
+				contentView.addSubview(label)
 				let image = UIImage(named: "counterback", in: .current, compatibleWith: nil)
 				let backImage = UIImageView(image: image)
-				backImage.translatesAutoresizingMaskIntoConstraints = false
-				contentView.insertSubview(backImage, belowSubview: stackView)
+				self.stackView.addArrangedSubview(backImage)
 				self.backImages.append(backImage)
 				
 				NSLayoutConstraint(item: backImage, attribute: .centerY, relatedBy: .equal, toItem: label, attribute: .centerY, multiplier: 1.0, constant: -10).isActive = true
 				NSLayoutConstraint(item: backImage, attribute: .centerX, relatedBy: .equal, toItem: label, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
 				NSLayoutConstraint(item: backImage, attribute: .width, relatedBy: .equal, toItem: contentView, attribute: .width, multiplier: 1.0/8.0, constant: 0).isActive = true
-				NSLayoutConstraint(item: backImage, attribute: .height, relatedBy: .equal, toItem: contentView, attribute: .height, multiplier: 1.0/2.5, constant: 0).isActive = true
+				NSLayoutConstraint(item: backImage, attribute: .height, relatedBy: .equal, toItem: backImage, attribute: .width, multiplier: 40.0/23.0, constant: 0).isActive = true
 			}
 			let label = UILabel()
 			label.textAlignment = .center
 			label.textColor = .black
 			label.text = ":"
 			label.font = .systemFont(ofSize: 30, weight: .bold)
+			label.sizeToFit()
 			self.sepratorLabels.append(label)
 			self.stackView.insertArrangedSubview(label, at: 2)
 		case .three:
@@ -233,18 +231,18 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 				let label = UILabel()
 				label.textAlignment = .center
 				label.textColor = .black
-				self.stackView.addArrangedSubview(label)
+				label.translatesAutoresizingMaskIntoConstraints = false
 				self.labels.append(label)
+				contentView.addSubview(label)
 				let image = UIImage(named: "counterback", in: .current, compatibleWith: nil)
 				let backImage = UIImageView(image: image)
-				backImage.translatesAutoresizingMaskIntoConstraints = false
-				contentView.insertSubview(backImage, belowSubview: stackView)
+				self.stackView.addArrangedSubview(backImage)
 				self.backImages.append(backImage)
 				
-				NSLayoutConstraint(item: backImage, attribute: .centerY, relatedBy: .equal, toItem: label, attribute: .centerY, multiplier: 1.0, constant: -5).isActive = true
+				NSLayoutConstraint(item: backImage, attribute: .centerY, relatedBy: .equal, toItem: label, attribute: .centerY, multiplier: 1.0, constant: -10).isActive = true
 				NSLayoutConstraint(item: backImage, attribute: .centerX, relatedBy: .equal, toItem: label, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
-				NSLayoutConstraint(item: backImage, attribute: .width, relatedBy: .equal, toItem: contentView, attribute: .width, multiplier: 1.0/12.0, constant: 0).isActive = true
-				NSLayoutConstraint(item: backImage, attribute: .height, relatedBy: .equal, toItem: contentView, attribute: .height, multiplier: 1.0/2.5, constant: 0).isActive = true
+				NSLayoutConstraint(item: backImage, attribute: .width, relatedBy: .equal, toItem: contentView, attribute: .width, multiplier: 1.0/14.0, constant: 0).isActive = true
+				NSLayoutConstraint(item: backImage, attribute: .height, relatedBy: .equal, toItem: backImage, attribute: .width, multiplier: 40.0/23.0, constant: 0).isActive = true
 			}
 			for i in 0...1
 			{
@@ -253,6 +251,8 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 				label.textColor = .black
 				label.text = ":"
 				label.font = .systemFont(ofSize: 30, weight: .bold)
+				label.sizeToFit()
+				label.translatesAutoresizingMaskIntoConstraints = true
 				self.sepratorLabels.append(label)
 				self.stackView.insertArrangedSubview(label, at: 4 - i*2)
 			}
@@ -268,6 +268,7 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 	public override func layoutSubviews() {
 		super.layoutSubviews()
 		
+		stackView.translatesAutoresizingMaskIntoConstraints = true
 		self.stackView.frame = self.bounds.inset(by: insets)
 		self.contentView.frame = self.bounds
 		
@@ -277,9 +278,7 @@ public class AnimatedStopWatch: UIView, UIGestureRecognizerDelegate {
 	
 	public override var intrinsicContentSize: CGSize {
 		let size = clockFaceImageView.image?.size ?? .zero
-//		print(self.bounds.width)
-//		print(size.width)
-		//return size
+		
 		return CGSize(width: self.bounds.width, height: size.height * (self.bounds.width/size.width))
 	}
 	public override func contentHuggingPriority(for axis: NSLayoutConstraint.Axis) -> UILayoutPriority {
